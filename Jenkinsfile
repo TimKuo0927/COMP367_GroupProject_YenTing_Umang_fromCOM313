@@ -9,6 +9,10 @@ pipeline {
         SONAR_TOKEN = credentials('sonar-token')
     }
 
+    triggers {
+        pollSCM('* * * * *')
+    }
+
     stages {
 
         stage('Checkout') {
@@ -44,12 +48,47 @@ pipeline {
 
         stage('Test') {
             steps {
-                bat 'npm run test -- --coverage'
+                bat 'npm run coverage'
             }
             post {
                 always {
                     echo 'Test stage finished (even if failed)'
                 }
+            }
+        }
+
+        stage('Deliver') {
+            steps {
+                bat 'echo Releasing artifact...'
+            }
+        }
+
+        stage('Deploy to GitHub Pages(Dev)') {
+            steps {
+                echo 'Deploying to GitHub Pages(Dev)...'
+                bat 'npm run deploy'
+            }
+        }
+
+
+        stage('Deploy to QAT') {
+            steps {
+                echo 'Deploying to QAT environment...'
+                bat 'echo App deployed to QAT'
+            }
+        }
+
+        stage('Deploy to Staging') {
+            steps {
+                echo 'Deploying to Staging environment...'
+                bat 'echo App deployed to STAGING'
+            }
+        }
+
+        stage('Deploy to Production') {
+            steps {
+                echo 'Deploying to Production environment...'
+                bat 'echo App deployed to PRODUCTION'
             }
         }
     }
