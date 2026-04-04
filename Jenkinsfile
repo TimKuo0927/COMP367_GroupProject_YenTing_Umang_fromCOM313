@@ -7,7 +7,6 @@ pipeline {
 
     environment {
         SONAR_TOKEN = credentials('sonar-token')
-        GITHUB_TOKEN = credentials('github-pat')
     }
 
     triggers {
@@ -69,7 +68,7 @@ pipeline {
                 echo 'Deploying to GitHub Pages(Dev)...'
                 script {
                     // Use the credentials block to get the token securely
-                    withCredentials([string(credentialsId: 'github-pat', variable: 'TOKEN')]) {
+                    withCredentials([string(credentialsId: 'github-pat1', variable: 'TOKEN')]) {
                         // We use npx to call gh-pages directly and force the URL with the token
                         bat """
                             set DEBUG=gh-pages
