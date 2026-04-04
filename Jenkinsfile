@@ -67,7 +67,16 @@ pipeline {
         stage('Deploy to GitHub Pages(Dev)') {
             steps {
                 echo 'Deploying to GitHub Pages(Dev)...'
-                bat 'set GITHUB_TOKEN=%GITHUB_TOKEN% && npm run deploy'
+                script {
+                    // Use the credentials block to get the token securely
+                    withCredentials([string(credentialsId: 'github-pat', variable: 'TOKEN')]) {
+                        // We use npx to call gh-pages directly and force the URL with the token
+                        bat """
+                            set DEBUG=gh-pages
+                            npx gh-pages -d build -r https://%TOKEN%@github.com/TimKuo0927/COMP367_GroupProject_YenTing_Umang_fromCOM313.git
+                        """
+                    }
+                }
             }
         }
 
