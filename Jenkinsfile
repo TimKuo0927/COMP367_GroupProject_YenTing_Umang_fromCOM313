@@ -64,22 +64,26 @@ pipeline {
         }
 
         stage('Deploy to GitHub Pages(Dev)') {
-    steps {
-        echo 'Deploying to GitHub Pages(Dev)...'
-        script {
-            withCredentials([string(credentialsId: 'github-pat1', variable: 'TOKEN')]) {
-                bat """
-                    :: 1. Force Git to accept long paths
-                    git config --global core.longpaths true
-                    
-                    :: 2. Run deploy using a custom (shorter) cache folder
-                    set DEBUG=gh-pages
-                    npx gh-pages -d dist -r https://%TOKEN%@github.com/TimKuo0927/COMP367_GroupProject_YenTing_Umang_fromCOM313.git --dest .
-                """
+            steps {
+                echo 'Deploying to GitHub Pages(Dev)...'
+                script {
+                    withCredentials([string(credentialsId: 'github-pat1', variable: 'TOKEN')]) {
+                        bat """
+                            :: 1. Set Git Identity so gh-pages can commit
+                            git config --global user.email "kyenting@my.centennialcollege.ca"
+                            git config --global user.name "Yen Ting Kuo (Jenkins)"
+                            
+                            :: 2. Handle long paths
+                            git config --global core.longpaths true
+                            
+                            :: 3. Run deploy
+                            set DEBUG=gh-pages
+                            npx gh-pages -d dist -r https://%TOKEN%@github.com/TimKuo0927/COMP367_GroupProject_YenTing_Umang_fromCOM313.git --dest .
+                        """
+                    }
+                }
             }
         }
-    }
-}
 
 
         stage('Deploy to QAT') {
