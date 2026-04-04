@@ -64,20 +64,22 @@ pipeline {
         }
 
         stage('Deploy to GitHub Pages(Dev)') {
-            steps {
-                echo 'Deploying to GitHub Pages(Dev)...'
-                script {
-                    // Use the credentials block to get the token securely
-                    withCredentials([string(credentialsId: 'github-pat1', variable: 'TOKEN')]) {
-                        // We use npx to call gh-pages directly and force the URL with the token
-                        bat """
-                            set DEBUG=gh-pages
-                            npx gh-pages -d dist -r https://%TOKEN%@github.com/TimKuo0927/COMP367_GroupProject_YenTing_Umang_fromCOM313.git
-                        """
-                    }
-                }
+    steps {
+        echo 'Deploying to GitHub Pages(Dev)...'
+        script {
+            withCredentials([string(credentialsId: 'github-pat1', variable: 'TOKEN')]) {
+                bat """
+                    :: 1. Force Git to accept long paths
+                    git config --global core.longpaths true
+                    
+                    :: 2. Run deploy using a custom (shorter) cache folder
+                    set DEBUG=gh-pages
+                    npx gh-pages -d dist -r https://%TOKEN%@github.com/TimKuo0927/COMP367_GroupProject_YenTing_Umang_fromCOM313.git --dest .
+                """
             }
         }
+    }
+}
 
 
         stage('Deploy to QAT') {
