@@ -7,10 +7,11 @@ pipeline {
 
     environment {
         SONAR_TOKEN = credentials('sonar-token')
+        GITHUB_TOKEN = credentials('github-pat')
     }
 
     triggers {
-        pollSCM('* * * * *')
+        pollSCM('H/5 * * * *')
     }
 
     stages {
@@ -66,7 +67,7 @@ pipeline {
         stage('Deploy to GitHub Pages(Dev)') {
             steps {
                 echo 'Deploying to GitHub Pages(Dev)...'
-                bat 'npm run deploy'
+                bat 'set GITHUB_TOKEN=%GITHUB_TOKEN% && npm run deploy -- --verbose'
             }
         }
 
