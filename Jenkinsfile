@@ -67,7 +67,7 @@ pipeline {
         stage('Deploy to GitHub Pages(Dev)') {
             steps {
                 echo 'Deploying to GitHub Pages(Dev)...'
-                bat 'set GITHUB_TOKEN=%GITHUB_TOKEN% && npm run deploy -- --verbose'
+                bat 'set GITHUB_TOKEN=%GITHUB_TOKEN% && npm run deploy'
             }
         }
 
