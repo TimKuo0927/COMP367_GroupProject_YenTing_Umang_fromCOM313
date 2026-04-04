@@ -72,7 +72,7 @@ pipeline {
                         // We use npx to call gh-pages directly and force the URL with the token
                         bat """
                             set DEBUG=gh-pages
-                            npx gh-pages -d build -r https://%TOKEN%@github.com/TimKuo0927/COMP367_GroupProject_YenTing_Umang_fromCOM313.git
+                            npx gh-pages -d dist -r https://%TOKEN%@github.com/TimKuo0927/COMP367_GroupProject_YenTing_Umang_fromCOM313.git
                         """
                     }
                 }
