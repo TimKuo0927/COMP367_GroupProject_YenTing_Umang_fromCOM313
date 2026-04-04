@@ -176,7 +176,7 @@ function HomePage() {
 
   return (
     <div className="dashboard-wrapper">
-      <h1>Exercise, yet?</h1>
+      <h1>Exercises, yet?</h1>
 
       <div className="summary-section mb-5">
         <h2 className="fw-bold">Week {currentWeekNum} Overview</h2>
