@@ -164,7 +164,6 @@ function HomePage() {
     localStorage.setItem("workout_logs", JSON.stringify(allWorkouts));
 
     setThisWeekWorkouts(getThisWeekWorkouts(currentYear, currentWeek));
-    console.log("Logged new workout:", newWorkout);
   };
 
   const clearLogs = () => {
