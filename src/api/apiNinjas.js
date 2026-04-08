@@ -4,7 +4,7 @@ export async function fetchExercisesByMuscle(muscle) {
   const apiKey = import.meta.env.VITE_API_NINJAS_KEY;
 
   if (!apiKey) {
-    throw new Error("Missing VITE_API_NINJAS_KEY in .env");
+    throw new Error("Missing .env or missing VITE_API_NINJAS_KEY in .env");
   }
   const response = await fetch(
     `${BASE_URL}/exercises?muscle=${encodeURIComponent(muscle)}`,

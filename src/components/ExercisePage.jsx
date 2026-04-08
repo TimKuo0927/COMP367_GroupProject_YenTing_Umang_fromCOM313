@@ -27,7 +27,8 @@ function ExercisePage() {
       const data = await fetchExercisesByMuscle(selectedMuscle);
       setAvailableExercises(data);
     } catch (e) {
-      setError(e?.message || "Failed to load exercises");
+      setError("An error occurred while fetching exercises API");
+      console.log(e);
       setAvailableExercises([]);
     } finally {
       setLoading(false);
