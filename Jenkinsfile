@@ -42,7 +42,14 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'npm run build'
+                withCredentials([string(credentialsId: 'MY_NINJA_API_KEY', variable: 'API_KEY')]) {
+                    bat """
+                        :: Create a temporary .env file for the build
+                        echo VITE_API_NINJAS_KEY=%API_KEY% > .env
+                        
+                        npm run build
+                    """
+                }
             }
         }
 
