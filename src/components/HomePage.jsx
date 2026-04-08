@@ -167,11 +167,18 @@ function HomePage() {
   };
 
   const clearLogs = () => {
-    localStorage.removeItem("workout_logs");
-    setThisWeekWorkouts([]);
-    setWeekList([]);
-    setCurrentWeekNum(0);
-  };
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete all workout data?"
+  );
+
+  if (!confirmDelete) return;
+
+  localStorage.removeItem("workout_logs");
+  setThisWeekWorkouts([]);
+  setWeekList([]);
+  setCurrentWeekNum(0);
+  setSummary({});
+};
 
   return (
     <div className="dashboard-wrapper">
