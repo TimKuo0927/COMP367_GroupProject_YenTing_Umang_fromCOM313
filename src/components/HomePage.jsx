@@ -168,11 +168,12 @@ function HomePage() {
   };
 
   const clearLogs = () => {
-    localStorage.removeItem("workout_logs");
-    setThisWeekWorkouts([]);
-    setWeekList([]);
-    setCurrentWeekNum(0);
-  };
+  localStorage.removeItem("workout_logs");
+  setThisWeekWorkouts([]);
+  setWeekList([]);
+  setCurrentWeekNum(0);
+  setSummary({});
+};
 
   return (
     <div className="dashboard-wrapper">
