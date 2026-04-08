@@ -6,7 +6,7 @@ function HomePage() {
   const [thisWeekWorkouts, setThisWeekWorkouts] = useState([]);
   const [summary, setSummary] = useState({});
 
-  //use to store the week list 
+  //use to store the week list
   const [weekList, setWeekList] = useState([]);
   const [currentWeekNum, setCurrentWeekNum] = useState(0);
 
@@ -29,7 +29,7 @@ function HomePage() {
     try {
       const parsed = JSON.parse(stored);
       return parsed.filter(
-        (log) => log.NumOfWeek === weekNumber && log.Year === year
+        (log) => log.NumOfWeek === weekNumber && log.Year === year,
       );
     } catch (err) {
       console.error("Failed to parse workout_logs from localStorage:", err);
@@ -44,17 +44,17 @@ function HomePage() {
     try {
       const parsed = JSON.parse(stored);
 
-      const weeks = [...new Set(parsed.map(w => w.NumOfWeek))].sort((a,b)=>a-b);
+      const weeks = [...new Set(parsed.map((w) => w.NumOfWeek))].sort(
+        (a, b) => a - b,
+      );
       setWeekList(weeks);
-      if(weeks.length>0){
+      if (weeks.length > 0) {
         // start at latest week
         setCurrentWeekNum(weeks[weeks.length - 1]);
-      }else{
+      } else {
         setCurrentWeekNum(0);
       }
-   
-
-    } catch(err){
+    } catch (err) {
       console.log(err);
     }
   };
@@ -109,7 +109,9 @@ function HomePage() {
       const demoData = [];
       for (let i = 0; i < 10; i++) {
         const workout = new Workout(sampleExercises.slice(i, i + 5));
-        workout.createDate = new Date(Date.now() - i * 86400000).toLocaleDateString("en-US");
+        workout.createDate = new Date(
+          Date.now() - i * 86400000,
+        ).toLocaleDateString("en-US");
         workout.NumOfWeek = getWeekNumber(new Date(Date.now() - i * 86400000));
         workout.Year = new Date(Date.now() - i * 86400000).getFullYear();
         demoData.push(workout);
@@ -148,7 +150,7 @@ function HomePage() {
 
   const totalVolume = Object.values(summary).reduce(
     (acc, m) => acc + m.totalVolume,
-    0
+    0,
   );
 
   const handleLogSampleWorkout = () => {
@@ -167,18 +169,40 @@ function HomePage() {
   };
 
   const clearLogs = () => {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete all workout data?"
-  );
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete all workout data?",
+    );
 
-  if (!confirmDelete) return;
+    if (!confirmDelete) return;
 
-  localStorage.removeItem("workout_logs");
-  setThisWeekWorkouts([]);
-  setWeekList([]);
-  setCurrentWeekNum(0);
-  setSummary({});
-};
+    localStorage.removeItem("workout_logs");
+    setThisWeekWorkouts([]);
+    setWeekList([]);
+    setCurrentWeekNum(0);
+    setSummary({});
+  };
+
+  const handleDeleteExercise = (workoutId, exerciseIndex) => {
+    if (!window.confirm("Delete this exercise?")) return;
+    const stored = localStorage.getItem("workout_logs");
+    if (!stored) return;
+
+    const allWorkouts = JSON.parse(stored);
+    const workoutIdx = allWorkouts.findIndex((w) => w.id === workoutId);
+    if (workoutIdx === -1) return;
+
+    allWorkouts[workoutIdx].ExerciseList.splice(exerciseIndex, 1);
+
+    if (allWorkouts[workoutIdx].ExerciseList.length === 0) {
+      allWorkouts.splice(workoutIdx, 1);
+    }
+
+    localStorage.setItem("workout_logs", JSON.stringify(allWorkouts));
+
+    const updatedWeekWorkouts = getThisWeekWorkouts(currentYear, currentWeekNum);
+    setThisWeekWorkouts(updatedWeekWorkouts);
+    getWeekList();
+  };
 
   return (
     <div className="dashboard-wrapper">
@@ -199,9 +223,11 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <h4 className="fw-bold">Weekly Summary</h4>
-          {Object.keys(summary).length === 0 && <p className="text-muted">No workouts logged this week.</p>}
+          {Object.keys(summary).length === 0 && (
+            <p className="text-muted">No workouts logged this week.</p>
+          )}
           {Object.entries(summary)
             .sort((a, b) => b[1].totalVolume - a[1].totalVolume)
             .map(([muscle, data]) => (
@@ -211,11 +237,14 @@ function HomePage() {
                 <div>Exercises Done: {data.exercises}</div>
               </div>
             ))}
-        </div>
+        </div> */}
 
         <div className="mt-4">
           <Button onClick={handleLogSampleWorkout}>Log Sample Workout</Button>
-          <Button onClick={clearLogs} style={{ marginLeft: "10px", backgroundColor: "red" }}>
+          <Button
+            onClick={clearLogs}
+            style={{ marginLeft: "10px", backgroundColor: "red" }}
+          >
             Clear All Logs
           </Button>
         </div>
@@ -227,11 +256,13 @@ function HomePage() {
           <div key={log.id} className="row mb-4">
             <div className="workout-column-card col">
               <div className="card-header-custom">
-                <span className="date-badge">{new Date(log.createDate).toLocaleDateString()}</span>
+                <span className="date-badge">
+                  {new Date(log.createDate).toLocaleDateString()}
+                </span>
               </div>
 
               <div className="exercise-list">
-                {log.ExerciseList.map((ex,index) => (
+                {log.ExerciseList.map((ex, index) => (
                   <div key={index} className="exercise-item">
                     <div className="ex-info">
                       <div className="ex-name">{ex.type}</div>
@@ -241,6 +272,15 @@ function HomePage() {
                     <div className="d-flex align-items-center gap-2">
                       <div className="ex-stats">
                         {ex.round} x {ex.row}
+                      </div>
+                      <div>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDeleteExercise(log.id, index)}
+                        >
+                          Delete
+                        </Button>
                       </div>
                     </div>
                   </div>
